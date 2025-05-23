@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
+
 
 class UserController extends Controller
 {
@@ -28,16 +29,9 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validatedCredentials = $request->validate([
-            'first_name' => ['required'],
-            'middle_name' => [],
-            'last_name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'address' => ['max:50'],
-            'password' => ['required', 'confirmed', Password::min(6)->numbers()->letters()],
-        ]);
+        $validatedCredentials = $request->validated();
 
         $user = User::create($validatedCredentials);
         Auth::login($user);

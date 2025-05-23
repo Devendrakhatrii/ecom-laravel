@@ -68,8 +68,17 @@ class CartItemController extends Controller
 
     public function destroy(string $id)
     {
-        //validate user cart id here
-        CartItem::findOrFail($id)->delete();
-        return back();
+
+        $cart = Auth::user()->cart;
+        $cart_item = CartItem::findOrFail($id);
+
+        if ($cart->cart_id != $cart_item->cart_id) {
+
+            return back();
+        }
+
+        if ($cart_item->delete()) {
+            return back();
+        }
     }
 }
